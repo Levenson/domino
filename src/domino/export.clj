@@ -15,7 +15,7 @@
              *parent* (.getContentType *parent*)
              "and mimeEntity is" (str type "/" sub) (.getCharset doc))
       ;; We have allready have Content-Type filed in `*parent*` javamail
-      ;; mimepart, but *.setContent* will overwrite it. 
+      ;; mimepart, but *.setContent* will overwrite it.
       (.setContent *parent* (.getContentAsText doc) (.getContentType *parent*)))))
 
 (defn message-build-multipart
@@ -26,25 +26,25 @@
       ;; FIXIT with-notes-object
       (with-notes-object [e e]
         (let [type (.getContentType e) sub (.getContentSubType e)]
-          (case type
-            (or "multipart" "message")
-            (with-bodypart [part (notes-headers-map e)]
-              (message-build-multipart e))
-            "text"
-            (with-bodypart [part (notes-headers-map e)]
-              (message-build-part e))
-            (with-preencoded-bodypart [part (notes-headers-map e)]
-              (message-build-part e))))))))
+          (cond
+           (some #(= type %) ["multipart" "message"])
+           (with-bodypart [part (notes-headers-map e)]
+             (message-build-multipart e))
+           (= type "text")
+           (with-bodypart [part (notes-headers-map e)]
+             (message-build-part e))
+           :esle (with-preencoded-bodypart [part (notes-headers-map e)]
+                   (message-build-part e))))))))
 
 (defn message-mime
   [doc pathname]
   (let [mime (.getMIMEEntity doc)]
     (let [type (.getContentType mime) sub (.getContentSubType mime)]
       (with-message [message (notes-headers-map mime)]
-        (case type
-          "multipart" (message-build-multipart mime)
-          "text" (message-build-part mime)
-          (warn "Strange TYPE \"" (str type "/" sub) "\" of the document. Don't know what to do"))
+        (cond
+         (some #(= type %) ["multipart" "message"]) (message-build-multipart mime)
+         (= type "text") (message-build-part mime)
+         :else (warn "Strange TYPE \"" (str type "/" sub) "\" of the document. Don't know what to do"))
         (with-open [f (output-stream pathname :encoding "UTF-8")]
           (.writeTo message f))))))
 
@@ -70,13 +70,14 @@
 
 (defn to-file
   [doc pathname]
-  ;; Some times Document doesn't have Body 
-  (case  (.getItemValueString doc "Form")
-    "Memo" (export-memo doc pathname)
-    "Notice" (with-document-as-mime doc
-               (export-memo doc pathname))
-    (warn doc "Form of the doc is:"  (.getItemValueString doc "Form") "don't know what to do!"
-          "Subject:" (.getItemValueString doc "Subject"))))
+  ;; Some times Document doesn't have Body
+  (let [form (.getItemValueString doc "Form")]
+    (cond
+     (some #(= form %) ["Memo", "Reply"]) (export-memo doc pathname)
+     (some #(= form %) ["Notice", "Appointment"]) (with-document-as-mime doc
+                                                  (export-memo doc pathname))
+     :else (warn doc "[SKIPPING] Form is:" form "Don't know what to do!"
+                 "Subject:" (.getItemValueString doc "Subject")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; export.clj ends here

@@ -20,9 +20,9 @@
       (.setConvertMIME *session* false)
       (info "IsConvertMIME =" (.isConvertMIME *session*))
       (doseq [doc ;; (notes-all-seq *database*)
-              (ncollection (.getView *database* "test2"))
+              (ncollection (.getView *database* "test"))
               ]
-        (warn "IN => " doc "subject:" (.getItemValueString doc "Subject"))
+        (info "IN =>" doc "Subject:" (.getItemValueString doc "Subject"))
         (with-document-validated doc
           ;; (println (notes-headers-map doc))
           (to-file doc (str "/home/abralek/projects/domino/test/.maildir/new/" doc)))))))

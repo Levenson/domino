@@ -121,8 +121,5 @@ applications on the desktop. Unshared sessions can also be created."
       ((h headers-handlers) part (h headers)))
     (headers-mime-add part headers)))
 
-;; (defn bodypart [headers content]
-;;   (new MimeBodyPart (internet-headers headers) content))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mime.clj ends here
