@@ -16,13 +16,23 @@ there.
    command: mkdir -p ~/.maildir/{cur,new,tmp})
 2. Set *mailbox* to ~/.maildir/cur directory
 3. Set your personal values to domino.properties
-4. Add directory where Lotus Notes was installed into
+4. Edit domino.sh. Add directory where Lotus Notes was installed into
    **LD\_LIBRARY\_PATH** variable. Add Notes.jar to your **CLASSPATH**, and I
    suggest you to add Lotus Notes directory to **java.library.path** and
    **sun.boot.library.path**.
 5. domino.sh run
-  
+
 It will run local smtpd on your 2500, which can be changed easily.
+
+domino.properties
+-----------------
+notes.mailbox="<your notes mailbox>"
+notes.server="<your notes server>"
+notes.password="<your password (optional >"
+
+domino.mailbox="<your local directory for exporting email>"
+domino.smtpd.port=2500
+
 
 TODO
 ----
