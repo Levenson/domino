@@ -6,7 +6,9 @@
         domino.notes
         clojure.tools.logging)
   (:require clojure.repl domino.import domino.export)
-  (:import javax.mail.internet.MimeMessage javax.mail.Session
+  (:import java.net.InetAddress
+           javax.mail.Session
+           javax.mail.internet.MimeMessage
            java.util.Properties
            org.subethamail.smtp.server.SMTPServer
            (org.subethamail.smtp.helper SimpleMessageListener SimpleMessageListenerAdapter))
@@ -74,6 +76,8 @@
 (defn -main
   []
   (doto *smtp-server*
+    (.setBindAddress (or (InetAddress/getByName (:domino.smtpd.inet *domino-properties*))
+                         nil))
     (.setPort (:domino.smtpd.port *domino-properties*))
     (.start))
   (run))
