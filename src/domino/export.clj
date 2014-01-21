@@ -39,7 +39,8 @@
 (defn message-mime
   [doc pathname]
   (let [mime (.getMIMEEntity doc)]
-    (let [type (.getContentType mime) sub (.getContentSubType mime)]
+    (let [type (clojure.string/lower-case (.getContentType mime))
+          sub (clojure.string/lower-case (.getContentSubType mime))]
       (with-message [message (notes-headers-map mime)]
         (cond
          (some #(= type %) ["multipart" "message"]) (message-build-multipart mime)
