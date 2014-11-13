@@ -26,11 +26,15 @@ It will run local smtpd on your 2500, which can be changed easily.
 
 domino.properties
 -----------------
+
 notes.mailbox="<your notes mailbox>"
+
 notes.server="<your notes server>"
-notes.password="<your password (optional >"
+
+notes.password="<your password (optional) >"
 
 domino.mailbox="<your local directory for exporting email>"
+
 domino.smtpd.port=2500
 
 
