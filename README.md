@@ -2,7 +2,7 @@ domino
 ======
 
 It is a Lotus Notes gateway allowing users to use any mail (e.g.,
-Thunderbird) you want through it.
+Thunderbird) they want.
 
 
 Usage
